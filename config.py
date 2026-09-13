@@ -33,7 +33,6 @@ WEBHOOK_URL = "https://webhook.site/ad50e7cb-7fa7-45a7-a4e3-f9d6239375a0"
 
 # from groq import Groq
 
-# client = Groq(api_key="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")
 
 # models = client.models.list()
 
