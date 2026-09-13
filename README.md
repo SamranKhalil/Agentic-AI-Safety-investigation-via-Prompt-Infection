@@ -64,11 +64,10 @@ Adjust this to match the files you push.
 .
 ├── pipelines/        # LangGraph scam and data-theft pipelines
 ├── defenses/         # instruction, marking, LLM tagging, delimiting
-├── evaluation/       # LLM-as-judge and success scoring
-├── data/             # synthetic PDFs and the fake user CSV
-├── results/          # run outputs and plots
+├── evaluation/       # evaluation criteria for each pipeline
+├── data/             # synthetic PDFs and the dummy user data CSV
+├── results/          # run plots
 ├── config.py         # model names, API keys, defence list
-└── dissertation.pdf  # full write-up
 ```
 
 ## Running it
