@@ -44,13 +44,20 @@ Success is defined per attack type. For the scam pipeline, an attack counts as s
 
 ## Key findings
 
-The replication holds. Self-replicating infection consistently beats the non-replicating baseline, and the attack works across all five models, so the vulnerability is not specific to the GPT family.
+Self-replication matters for simple attacks, not complex ones. In the scam pipeline, self-replicating infection achieves 50% success versus 24% for the non-replicating baseline. In the data theft pipeline the gap disappears: 68% versus 66%. The replication mechanism adds coordination overhead that can interfere with the precise tool-calling instructions the DB Manager and Coder need to follow.
 
-Model behaviour splits by attack type rather than by model size. Qwen3-27B almost fully resists the scam attack but stays highly vulnerable to data theft. GPT-OSS-120B largely resists the scam attack but is fully compromised in the theft pipeline. This matches the original paper's point that a stronger model is not automatically a safer one once a multi-step attack is in play.
+Model behaviour splits by attack type, not model size. Gemini 3.1 Flash Lite achieves 100% attack success in both pipelines, making it the most susceptible model. Qwen3-27B blocks every scam attack but remains highly vulnerable to data theft. GPT-OSS-120B resists scam attacks but is fully compromised in the theft pipeline. The larger GPT-OSS model is more resistant than the smaller GPT-OSS-20B, which is counterintuitive and consistent with the capability paradox from the original paper: stronger models become more effective attackers once compromised, but also apply stronger internal resistance in some configurations.
 
-Standalone defences are weak. In the scam pipeline, instruction defence, marking, and LLM tagging each cut the attack success rate by about 10 to 12 percentage points from a 34% baseline. Delimiting slightly raised the success rate, so it can be counterproductive on some models. In the theft pipeline, no standalone defence made much difference against a 60% baseline.
+Global messaging produces higher attack success than local messaging across both pipelines. In global mode, a downstream agent can still see the original infection in the message history even if a prior agent failed to replicate it correctly. In local mode, a broken replication chain ends the attack.
 
-Combining defences with LLM tagging helps more. Instruction plus LLM tagging brought theft success down to 36%, and marking plus LLM tagging to 35%. This partly supports the paper's conclusion that defences need to be combined, though the absolute success rates here stay higher than the paper's, which points to real differences in how non-GPT models behave under attack.
+Standalone defences provide modest reductions. In the scam pipeline, instruction defence, marking, and LLM tagging each cut success by 10 to 12 percentage points from a 34% baseline. In the theft pipeline, no standalone defence made much difference against a 60% baseline.
+
+Combined defences work better. Instruction defence plus LLM tagging reduces scam success from 36% to 20% and theft success from 60% to 36%. Marking plus LLM tagging reduces scam success to 20% and theft success to 25%. The pattern matches the original paper's conclusion that combined defences are necessary, though absolute success rates here are higher, pointing to meaningful differences in how non-GPT models respond to prompt-based defences.
+
+The vulnerability is not specific to the GPT family. The core finding of the original paper holds across five models from two providers. No single defence is sufficient. Combined strategies are needed, and even the best combined defence leaves a residual attack success rate.
+
+This study adds one thing the original paper did not measure
+A stealth dimension for the theft pipeline. A run was classified as full success if data was exfiltrated and the output shown to the user looked clean. It was classified as partial success if data was exfiltrated but the infection prompt leaked into the user-visible output. The results show that models vary considerably in their ability to conceal the attack even when they successfully exfiltrate data.
 
 ## Repository structure
 
